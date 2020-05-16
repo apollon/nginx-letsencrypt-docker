@@ -21,6 +21,9 @@ RUN chmod +x *.sh
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
+RUN mkdir -p /var/log/letsencrypt \ 
+	&& touch /var/log/letsencrypt/letsencrypt.log \
+	&& ln -sf /dev/stdout /var/log/letsencrypt/letsencrypt.log
 
 #RUN certbot register -n --agree-tos --email apolon11@gmail.com
 
