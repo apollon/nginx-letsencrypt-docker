@@ -3,7 +3,7 @@ FROM nginx:mainline-alpine
 RUN apk --no-cache add openssl && \
 	apk --no-cache add certbot-nginx
 RUN mkdir -p /etc/nginx/ssl && \
-	openssl dhparam -out /etc/nginx/ssl/dhparam-2048.pem 2048
+	openssl dhparam -out /etc/nginx/ssl/dhparam-4096.pem 4096
 RUN apk del openssl
 
 RUN mkdir -p /home/nginx
