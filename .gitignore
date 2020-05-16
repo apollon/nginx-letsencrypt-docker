@@ -1,1 +1,2 @@
-nginx-letsencrypt-docker.code-workspace
+*.code-workspace
+dist
