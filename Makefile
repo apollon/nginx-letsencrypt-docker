@@ -1,4 +1,4 @@
-.PHONY: all build nginx pushboard clean mount umount
+.PHONY: all build nginx clean
 
 ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 DIST_DIR = ./dist

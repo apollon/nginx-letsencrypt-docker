@@ -6,7 +6,7 @@ RUN mkdir -p /etc/nginx/ssl && \
 	openssl dhparam -out /etc/nginx/ssl/dhparam-2048.pem 2048
 RUN apk del openssl
 
-RUN mkdir -p /home/nginx && chown -R nginx:nginx /home/nginx
+RUN mkdir -p /home/nginx
 WORKDIR /home/nginx
 
 RUN rm -rf /etc/nginx/conf.d/*.conf
@@ -14,8 +14,8 @@ RUN mkdir -p /var/cache/nginx/push-board
 
 RUN echo "0 5 * * 1 /home/nginx/renew_cert.sh" | crontab -
 
-COPY ./nginx/config/general.conf ./
-COPY ./nginx/entrypoint.sh ./nginx/renew_cert.sh ./
+COPY ./general.conf ./config
+COPY ./entrypoint.sh ./renew_cert.sh ./
 RUN chmod +x *.sh
 
 # forward request and error logs to docker log collector
