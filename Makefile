@@ -8,7 +8,7 @@ all: build
 build: nginx
 
 nginx:
-	docker build --force-rm --squash -f ./Dockerfile -t nginx-le .
+	docker build --pull --rm --squash -f ./Dockerfile -t nginx-le .
 	docker save -o $(DIST_DIR)/nginx-le.tar nginx-le
 
 clean:
