@@ -19,4 +19,7 @@ fi
 #	rm -f /etc/nginx/conf.d/push-board.conf
 #fi
 
+echo "Reload NGINX"
+
+nginx -t
 nginx -s reload

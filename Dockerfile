@@ -11,6 +11,7 @@ WORKDIR /etc/nginx/conf.d
 
 RUN rm -rf *.conf
 COPY ./general.conf ./ssl-params.props ./
+RUN mkdir -p ./sites
 
 RUN mkdir -p /home/nginx
 WORKDIR /home/nginx
