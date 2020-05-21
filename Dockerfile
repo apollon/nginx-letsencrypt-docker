@@ -1,22 +1,24 @@
 FROM nginx:mainline-alpine
 
 RUN apk --no-cache add openssl && \
-	apk --no-cache add certbot-nginx
-RUN mkdir -p /etc/nginx/ssl && \
-	openssl dhparam -out /etc/nginx/ssl/dhparam-4096.pem 4096
-RUN apk del openssl
+	mkdir -p /etc/nginx/ssl && \
+	openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048 \
+	apk del openssl
+
+RUN apk --no-cache add certbot-nginx inotify-tools
+
+WORKDIR /etc/nginx/conf.d
+
+RUN rm -rf *.conf
+COPY ./general.conf ./ssl-params.props ./
 
 RUN mkdir -p /home/nginx
 WORKDIR /home/nginx
 
-RUN rm -rf /etc/nginx/conf.d/*.conf
-RUN mkdir -p /var/cache/nginx/push-board
+COPY ./entrypoint.sh ./update_ssl.sh ./renew_cert.sh ./
+RUN chmod +x *.sh
 
 RUN echo "0 5 * * 1 /home/nginx/renew_cert.sh" | crontab -
-
-COPY ./general.conf ./config
-COPY ./entrypoint.sh ./renew_cert.sh ./
-RUN chmod +x *.sh
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -24,8 +26,6 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN mkdir -p /var/log/letsencrypt \ 
 	&& touch /var/log/letsencrypt/letsencrypt.log \
 	&& ln -sf /dev/stdout /var/log/letsencrypt/letsencrypt.log
-
-#RUN certbot register -n --agree-tos --email apolon11@gmail.com
 
 EXPOSE 80 443
 

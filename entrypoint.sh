@@ -1,5 +1,6 @@
 #!/bin/sh
 
 crond
-./renew_cert.sh &
+sh -c 'sleep 1 && ./update_ssl.sh' &
+
 nginx -g 'daemon off;'
