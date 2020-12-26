@@ -7,19 +7,7 @@ RUN apk --no-cache add openssl && \
 
 RUN apk --no-cache add certbot-nginx inotify-tools
 
-WORKDIR /etc/nginx/conf.d
-
-RUN rm -rf *.conf
-COPY ./general.conf ./ssl-params.props ./
-RUN mkdir -p ./sites
-
-RUN mkdir -p /home/nginx
-WORKDIR /home/nginx
-
-COPY ./entrypoint.sh ./update_ssl.sh ./renew_cert.sh ./
-RUN chmod +x *.sh
-
-RUN echo "0 5 * * 1 /home/nginx/renew_cert.sh" | crontab -
+RUN echo "0 5 * * 1 /home/nginx/refresh_configs.sh" | crontab -
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
@@ -30,4 +18,18 @@ RUN mkdir -p /var/log/letsencrypt \
 
 EXPOSE 80 443
 
-CMD [ "sh", "./entrypoint.sh"]
+WORKDIR /etc/nginx/conf.d
+
+RUN rm -rf *.conf
+COPY ./configs/general.conf ./configs/ssl-params.props ./
+
+RUN mkdir -p ./sites-enabled ./sites-available
+RUN mkdir -p /var/www/certbot
+
+RUN mkdir -p /home/nginx
+WORKDIR /home/nginx
+
+COPY ./scripts/entrypoint.sh ./scripts/refresh_configs.sh ./scripts/renew_cert.sh ./
+RUN chmod +x *.sh
+
+CMD [ "sh", "./entrypoint.sh" ]
