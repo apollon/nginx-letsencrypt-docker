@@ -1,7 +1,10 @@
 #!/bin/sh
 
-crond
-sh -c 'sleep 10 && ./refresh_configs.sh' &
-sh -c 'while inotifywait -re create,delete,move,modify /etc/nginx/conf.d/sites-available/; do cd /home/nginx; ./refresh_configs.sh; done' &
+refresh_config_cmd="./refresh_configs.sh"
+nginx_config_available_path="/etc/nginx/conf.d/sites-available"
 
-nginx -g 'daemon off;'
+crond
+sh -c "sleep 10 && $refresh_config_cmd" &
+sh -c "while inotifywait -re create,delete,move,modify $nginx_config_available_path; do cd /home/nginx; $refresh_config_cmd; done" &
+
+nginx -g "daemon off;"

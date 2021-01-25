@@ -7,7 +7,7 @@ RUN apk --no-cache add openssl && \
 
 RUN apk --no-cache add certbot-nginx inotify-tools
 
-RUN echo "0 5 * * 1 /home/nginx/refresh_configs.sh" | crontab -
+RUN echo "0 5 * * 1 /home/nginx/refresh_configs.sh > /home/nginx/refresh_configs_crontab.log 2>&1" | crontab -
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
